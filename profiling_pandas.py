@@ -1,8 +1,6 @@
 import pandas as pd
 from ydata_profiling import ProfileReport
 
-# 1. Charger vos données dans un DataFrame
-# Exemple de chargement d'un fichier CSV :
 file_path = './dataset/dataset_nettoye_pipeline.csv' 
 
 df = pd.read_csv(file_path, delimiter=",")

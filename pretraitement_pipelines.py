@@ -1,5 +1,6 @@
 import pandas as pd
 
+'''
 def conversion_date(dataset: pd.DataFrame):
     # Traitement des O dans le dataset :
     # On crée une nouvelle colonne pour cette donnée
@@ -19,15 +20,17 @@ def conversion_date(dataset: pd.DataFrame):
         raise ValueError(f"conversion_date : Il reste des NaT : \
                          {dataset['Date'][dataset[new_col].isna()]}")
     dataset = dataset.drop("Date", axis=1)
+'''
 
     return dataset
-
-
 def conversion_type(dataset: pd.DataFrame):
 
     # Lower case pour éviter les doublons
     df = dataset.copy().dropna(subset=['Type'])
     lowered = df['Type'].str.lower()
+
+
+    #obsolete à revoir
 
     # On enlève les modèles en de ...
     lowered = lowered.str.replace("de ", "", regex=False)
@@ -42,15 +45,19 @@ def conversion_type(dataset: pd.DataFrame):
         raise ValueError(f"conversion_type : Modele à NaN : \
                          {dataset['Type'][df['Modele'].isna()]}")
     df = df.drop("Type", axis=1)
+
+
+
+
+
     return df
 
 
 def conversion_index(dataset: pd.DataFrame):
-    # Inplace pour ne pas faire de copie, modifier direct original
     dataset = dataset.drop("index", axis=1)
     return dataset
 
-
+'''
 def conversion_location(dataset: pd.DataFrame):
     # Conversion en strings
     dataset["Location"] = dataset["Location"].astype(str)
@@ -69,20 +76,33 @@ def conversion_location(dataset: pd.DataFrame):
     
     dataset = dataset.drop("Location", axis=1)
     return dataset
-
+'''
 
 def conversion_numerics(dataset:pd.DataFrame):
     # Drop valeurs négatives
-    dataset = dataset[dataset['Aboard'] >= 0]
-    dataset = dataset[dataset['Fatalities'] >= 0]
-    dataset = dataset[dataset['Ground'] >= 0]
+    dataset = dataset[dataset['Year'] >= 0]
+    dataset = dataset[dataset['CarAge'] >= 0]
+    dataset = dataset[dataset['Mileage(km)'] >= 0]
+    dataset = dataset[dataset['Horsepower'] >= 0]
+    dataset = dataset[dataset['Torque'] >= 0]
+    dataset = dataset[dataset['Price($)'] >= 0]
+
+
+
+
+    #obsolete à revoir
 
     # Valeurs manquantes : 
-    dataset["Aboard_filled"] = dataset.groupby("Modele")["Aboard"]\
+    dataset["Aboard_cards"] = dataset.groupby("Modele")["Aboard"]\
                                     .transform(lambda x: x.fillna(x.mean()))
     dataset["Fatalities_filled"] = dataset.groupby("Modele")["Fatalities"]\
                                     .transform(lambda x: x.fillna(x.mean()))
     dataset = dataset.fillna({"Ground": 0})
+
+
+
+
+
 
     if dataset["Aboard_filled"].isna().sum() > 0:
         raise ValueError("Aboard_filled contient des NaN")
@@ -90,6 +110,7 @@ def conversion_numerics(dataset:pd.DataFrame):
         raise ValueError("Aboard_filled contient des NaN")
     if dataset["Ground"].isna().sum() > 0:
         raise ValueError("Ground contient des NaN")
+
     return dataset
 
 def script_pretraitement(dataset):
@@ -97,10 +118,10 @@ def script_pretraitement(dataset):
     
     try:
         dataset_traite = (dataset
-            .pipe(conversion_date)
+           #.pipe(conversion_date)
             .pipe(conversion_type)
             .pipe(conversion_index)
-            .pipe(conversion_location)
+           #.pipe(conversion_location)
             .pipe(conversion_numerics)
         )
     except Exception as e:
@@ -109,11 +130,8 @@ def script_pretraitement(dataset):
 
 
 if __name__=='__main__':
-    file_path = './dataset/Airplane_Crashes_and_Fatalities_Since_1908.csv' 
+    file_path = './dataset/Cars/dataset_cars_projet.csv' 
     dataset = pd.read_csv(file_path, delimiter=",")
 
     script_pretraitement(dataset)
-    print("!!!!!!!!!!!")
     print("DATASET NETTOYE")
-    print("!!!!!!!!!!!")
-    

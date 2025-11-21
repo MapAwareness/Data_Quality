@@ -6,6 +6,6 @@
 5. acidentHistory delete other than No or Yes
 6. Insurance delete other than Expired or Valid
 7. RegistrationStatus delete other than complete or incomplete
-8. split carType to brand and model
+8. split "carType" to [brand, model, version, class]
 9. Doors, seat split celule, Capacity to int, >0 and <10
-10. option
+10. option : use this list of option to have a clomune with a bool for eatch type
